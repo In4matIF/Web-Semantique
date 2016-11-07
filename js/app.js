@@ -6,6 +6,28 @@ var alchemyUrl = "https://gateway-a.watsonplatform.net/calls/url/URLGetText?apik
 
 var dbpediaUrl = "http://spotlight.sztaki.hu:2222/rest/annotate";
 
+var sparqlRequest = String("PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
+                        "SELECT * WHERE { " +
+                            "{ ?node rdf:type <http://dbpedia.org/ontology/Album> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://schema.org/MusicAlbum> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://umbel.org/umbel/rc/MusicalPerformer> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://dbpedia.org/ontology/Band> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://dbpedia.org/ontology/Group> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://schema.org/MusicGroup> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://dbpedia.org/ontology/MusicalArtist> }" +
+                            "UNION" +
+                            "{ ?node rdf:type <http://dbpedia.org/ontology/MusicalWork> }" +
+                        "}"
+                    );
+
+var URIs = [];
+
 $( "#button-search" ).click(function(event) {
     var search = $("#search").val();
     $("#icon-search").addClass("loading");
@@ -26,22 +48,32 @@ function getUrlList(search){
                 data: {url:item.formattedUrl}
             }).done(function(alchemyData) {
                 var text = alchemyData.getElementsByTagName('text')[0].innerHTML;
-                console.log("Text : ",text);
                 $.ajax({
                     method: "POST",
                     url: dbpediaUrl,
-                    crossDomain: true,
+                    headers: {
+                        Accept: "application/json"
+                    },
                     data: {
                         text:text,
-                        confidence:0.2,
+                        confidence:0.20,
                         support:20
                     }
                 }).done(function(dbPediaData) {
-                    $("#icon-search").removeClass("loading");
-                    console.log("DBPEDIA : ",dbPediaData);
+                    _.forEach(dbPediaData.Resources, function (resource, index) {
+                        var test = _.find(URIs,function(e){
+                            return e == resource['@URI'];
+                        });
+                        if(!test){
+                            URIs.push(resource['@URI']);
+                            $("#results").append("<div><a target='_blank' href='"+resource['@URI']+"'>"+resource['@URI']+"</a></div>");
+                        }
+                        if(index==dbPediaData.Resources.length-1){
+                            $("#icon-search").removeClass("loading");
+                        }
+                    });
                 });
             });
-            $("#results").append("<div><a href='"+item.formattedUrl+"'>"+item.formattedUrl+"</a></div>");
         })
     });
 }
