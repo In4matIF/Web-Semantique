@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="./css/lib/semanticui/semantic.min.css">
     <link rel="stylesheet" href="./css/lib/tether/tether.min.css">
 </head>
-<body>
-    <div class="ui container">
+<body ng-app="webSemantiqueApp">
+    <div class="ui container" ng-controller="MainCtrl">
         <br>
         <h1 class="ui center aligned header">Web Sémantique</h1>
         <br>
@@ -18,21 +18,193 @@
                     <input id="search" class="prompt" type="text" placeholder="Recherche...">
                     <i id="icon-search" class="search icon"></i>
                 </div>
-                <button id="button-search" class="ui primary button">
+                <select ng-model="choosenType" class="ui search dropdown">
+                    <option value="artist" selected>Artist</option>
+                    <option value="album">Album</option>
+                    <option value="track">Song</option>
+                </select>
+                <button id="button-search" class="ui primary button" ng-click="launchedSearch()">
                     Rechercher
                 </button>
             </div>
         </div>
         <br>
         <br>
-        <div class="content">
-            <div class="ui raised very padded text container segment">
-                <h2 class="ui header">Résultats : </h2>
-                <div id="results"></div>
+        <div ng-if="searchFinished" class="content">
+            <div class="ui top attached tabular menu">
+                <div class="item active">Résultats</div>
+            </div>
+            <div ng-if="activeType=='artist'" class="ui bottom attached active tab segment">
+                <h1 class="ui centered header">{{artist.name}}</h1>
+                <img class="ui centered big rounded image" src="{{artist.image}}">
+                <br>
+                <div class="ui grid">
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Description</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="column justified">{{artist.comment}}</div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Albums</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="ui items">
+                            <div ng-repeat="album in artist.albums" class="item">
+                                <div class="ui tiny image">
+                                    <img src="http://91.68.209.12/bmi/semantic-ui.com/images/wireframe/image.png">
+                                </div>
+                                <div class="middle aligned content">
+                                    <a class="header">{{album['album'].value | URIDisplay}}</a>
+                                    <div class="meta">
+                                        <span class="genre">{{album['genre'].value | URIDisplay}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Lien</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <a class="column justified" target="_blank" href="{{artist.link}}">{{artist.link}}</a>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="activeType=='album'" class="ui bottom attached active tab segment">
+                <h1 class="ui centered header">{{album.name}}</h1>
+                <br>
+                <div class="ui grid">
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Description</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="column justified">{{album.comment}}</div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Artiste</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{album.artiste | URIDisplay}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Date</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{album.annee}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Genre</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{album.genre | URIDisplay}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Chansons</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="ui relaxed divided list">
+                            <div ng-repeat="track in album.tracks" class="item">
+                                <i class="large github middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="header">{{track | URIDisplay}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Labels</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="ui relaxed divided list">
+                            <div ng-repeat="label in album.labels" class="item">
+                                <i class="large github middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="header">{{label | URIDisplay}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Producteurs</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="ui relaxed divided list">
+                            <div ng-repeat="producer in album.producers" class="item">
+                                <i class="large github middle aligned icon"></i>
+                                <div class="content">
+                                    <div class="header">{{producer | URIDisplay}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Lien</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <a class="column justified" target="_blank" href="{{album.link}}">{{album.link}}</a>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Album Suivant</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{album.nextAlbum | URIDisplay}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="activeType=='track'" class="ui bottom attached active tab segment">
+                <h1 class="ui centered header">{{track.name}}</h1>
+                <img class="ui centered big rounded image" src="{{track.image}}">
+                <br>
+                <div class="ui grid">
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Description</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <div class="column justified">{{track.comment}}</div>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Artiste</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{track.artiste | URIDisplay}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Album</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{track.album | URIDisplay}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Date</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{track.date}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Genre</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{track.genre | URIDisplay}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Durée</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h3 class="column">{{track.length}}</h3>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <h2 class="column">Lien</h2>
+                    </div>
+                    <div class="centered ten wide column row">
+                        <a class="column justified" target="_blank" href="{{track.link}}">{{track.link}}</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src="./js/lib/jquery/jquery-3.1.1.min.js"></script>
     <script src="./js/lib/tether/tether.min.js"></script>
     <script src="./js/lib/semanticui/semantic.min.js"></script>
