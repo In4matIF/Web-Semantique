@@ -51,8 +51,12 @@ function MainCtrl($scope) {
             /************************************************
              *                 Locales Variables
              *************************************************/
-    var googleSearchKey = "AIzaSyD5moi_-N6jsin00kMULpt7pa68q809Xy8";
+    //var googleSearchKey = "AIzaSyD5moi_-N6jsin00kMULpt7pa68q809Xy8";
+    var googleSearchKey = "AIzaSyA8yFNv877LLhd6khc0K6fXoptPS5pGbwI";
     var googleUrl = "https://www.googleapis.com/customsearch/v1?key=" + googleSearchKey;
+    var nbGoogleLinks = 5;
+    var nbGoogleImageLinks = 1;
+    var imageType = "jpg";
 
     var alchemyApiKey = "184ae5713a19672c62356383a3b5e1be5894a3b6";
     var alchemyApiKey2 = "9ba8cb9c60c03a5735dda4d10b5579c57aeb0127";
@@ -243,35 +247,104 @@ function MainCtrl($scope) {
      *                 Listeners
      *************************************************/
     $scope.launchedSearch = function () {
-        $scope.searchFinished = false;
-        $scope.activeType = $scope.choosenType;
+        init();
         var search = $("#search").val();
-        $("#icon-search").addClass("loading");
         getUrlList(search);
     };
+
+    $scope.launchedSparqlRequest = function (typeURI,URI) {
+        init(typeURI);
+        sparql(typeURI,URI);
+    };
+
+    $scope.googleImage = function(search){
+        console.log(search);
+        var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + "&alt=json" + "&start=1" + "&num=" + nbGoogleImageLinks + "&fileType=" + imageType;
+        $.ajax({
+            method: "GET",
+            url: url,
+            success: function (googleImageData) {
+                console.log("GoogleImage : ",googleImageData);
+                return googleImageData.items[0].link;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(arguments);
+            }
+        });
+    }
 
     /************************************************
      *                 Functions
      *************************************************/
     function getUrlList(search){
-        $("#results").empty();
-        URIs = [];
         google(search);
-        //testTypeSparql();
+    }
+
+    function init(typeURI) {
+        $("#icon-search").addClass("loading");
+        $scope.artist = {
+            name:"",
+            albums:[],
+            tracks:[],
+            comment:"",
+            image:"",
+            link:""
+        };
+        $scope.track = {
+            name:"",
+            artiste:"",
+            album:"",
+            genre:"",
+            comment:"",
+            length:"",
+            date:"",
+            link:"",
+            image:""
+        };
+        $scope.album = {
+            name:"",
+            annee:"",
+            artiste:"",
+            genre:"",
+            labels:[],
+            comment:"",
+            nextAlbum:"",
+            producers:[],
+            tracks:[],
+            link:""
+        };
+
+        $scope.searchFinished = false;
+        if(typeURI){
+            $scope.activeType = typeURI;
+        }else{
+            $scope.activeType = $scope.choosenType;
+        }
+
+        URIs = [];
+        sortedURIs = [];
+        bestURI = "";
+        cptData = 0;
     }
 
             /************************************************
              *             Step 1 : Google
              *************************************************/
     function google(search){
-        var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + "&alt=json" + "&start=1";
+        var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + "&alt=json" + "&start=1" + "&num=" + nbGoogleLinks;
         $.ajax({
             method: "GET",
-            url: url
-        }).done(function(data) {
-            _.forEach(data.items,function (item, indexGoogle) {
-                alchemyAPI(item, indexGoogle, data.items.length);
-            })
+            url: url,
+            success: function (googleData) {
+                console.log("Google : ",googleData);
+                _.forEach(googleData.items,function (item, indexGoogle) {
+                    alchemyAPI(item, indexGoogle, googleData.items.length);
+                })
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $("#icon-search").removeClass("loading");
+                console.log(arguments);
+            }
         });
     }
 
@@ -282,9 +355,15 @@ function MainCtrl($scope) {
         $.ajax({
             method: "POST",
             url: alchemyUrl,
-            data: {url:item.formattedUrl}
-        }).done(function(alchemyData) {
-            dbPedia(alchemyData, indexGoogle, dataLength);
+            data: {url:item.formattedUrl},
+            success: function (alchemyData) {
+                //console.log("Alchemy : ",alchemyData);
+                dbPedia(alchemyData, indexGoogle, dataLength);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $("#icon-search").removeClass("loading");
+                console.log(arguments);
+            }
         });
     }
 
@@ -296,7 +375,7 @@ function MainCtrl($scope) {
         text = formatText(text);
         $.ajax({
             method: "POST",
-            url: dbpediaUrl2,
+            url:dbpediaUrl2,
             headers: {
                 Accept: "application/json"
             },
@@ -304,13 +383,16 @@ function MainCtrl($scope) {
                 text:text,
                 confidence:0.5,
                 support:0
-            },success: function (dbPediaData) {
+            },
+            success: function (dbPediaData) {
+                //console.log("DBPedia : ",dbPediaData);
                 cptData++;
                 _.forEach(dbPediaData.Resources, function (resource, index) {
                     filterPush(resource, index, dbPediaData, dataLength);
                 });
             },
             error: function (xhr, ajaxOptions, thrownError) {
+                cptData++;
                 $("#icon-search").removeClass("loading");
                 console.log(arguments);
             }
@@ -323,10 +405,6 @@ function MainCtrl($scope) {
     function testTypeSparql(typeURI) {
         if(!typeURI) typeURI = 'artist';
         var sparqlRequest = generateSparqlRequest(true, typeURI, generateBestURI());
-        //bestURI = "<http://dbpedia.org/resource/Like_a_Virgin_(song)>";
-        //bestURI = "<http://dbpedia.org/resource/One_Direction>";
-        //bestURI = "<http://dbpedia.org/resource/Up_All_Night_(One_Direction_album)>";
-        var sparqlRequest = generateSparqlRequest(true, typeURI, bestURI);
         $.ajax({
             method: "POST",
             url: sparqlUrl,
@@ -335,8 +413,9 @@ function MainCtrl($scope) {
             },
             data: {
                 query:sparqlRequest
-            },success: function (data) {
-                console.log("TestTypeSparql : ",data);
+            },
+            success: function (data) {
+                //console.log("TestTypeSparql : ",data);
                 if(data.results.bindings.length > 0){
                     sparql(typeURI);
                 }else{
@@ -365,8 +444,12 @@ function MainCtrl($scope) {
             /************************************************
              *             Step 5 : Sparql
              *************************************************/
-    function sparql(typeURI) {
-        var sparqlRequest = generateSparqlRequest(false, typeURI, bestURI);
+    function sparql(typeURI, URI) {
+        if(URI){
+            var sparqlRequest = generateSparqlRequest(false, typeURI, URI);
+        }else{
+            var sparqlRequest = generateSparqlRequest(false, typeURI, generateBestURI());
+        }
         $.ajax({
             method: "POST",
             url: sparqlUrl,
@@ -375,8 +458,9 @@ function MainCtrl($scope) {
             },
             data: {
                 query:sparqlRequest
-            },success: function (data) {
-                console.log("Sparql : ",data);
+            },
+            success: function (data) {
+                //console.log("Sparql : ",data);
                 formatResultSparql(data, typeURI);
                 $("#icon-search").removeClass("loading");
             },
@@ -454,7 +538,13 @@ function MainCtrl($scope) {
             }
         }
         if(index === dbPediaData.Resources.length-1 && cptData === dataLength){
-            testTypeSparql();
+            if($scope.choosenType == "artist"
+                || $scope.choosenType == "album"
+                || $scope.choosenType == "track"){
+                sparql($scope.choosenType);
+            }else{
+                testTypeSparql();
+            }
         }
     }
 
@@ -464,7 +554,13 @@ function MainCtrl($scope) {
                 _.forEach(data.results.bindings, function (binding) {
                     _.forEach(binding, function (value, key, object) {
                         if(key=='genre') {
-                            $scope.artist['albums'].push(object);
+                            if(!_.find(
+                                    $scope.artist['albums'],
+                                    function (e) {return e['album'].value==object['album'].value;}
+                                )
+                            ){
+                                $scope.artist['albums'].push(object);
+                            }
                         }else if (key!='album'){
                             $scope.artist[key] = value.value;
                         }
@@ -496,6 +592,12 @@ function MainCtrl($scope) {
         }
         $scope.searchFinished = true;
         $scope.$apply();
+    }
+
+    $scope.URIDisplay = function (URI) {
+        var output = URI.substr(URI.lastIndexOf("/") + 1);
+        output = _.replace(output,new RegExp("_", 'g'), ' ');
+        return output;
     }
 }
 

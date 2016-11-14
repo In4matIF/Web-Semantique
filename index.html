@@ -55,7 +55,7 @@
                                     <img src="http://91.68.209.12/bmi/semantic-ui.com/images/wireframe/image.png">
                                 </div>
                                 <div class="middle aligned content">
-                                    <a class="header">{{album['album'].value | URIDisplay}}</a>
+                                    <a class="header" ng-click="launchedSparqlRequest('album','<'+album['album'].value+'>')">{{album['album'].value | URIDisplay}}</a>
                                     <div class="meta">
                                         <span class="genre">{{album['genre'].value | URIDisplay}}</span>
                                     </div>
@@ -85,7 +85,7 @@
                         <h2 class="column">Artiste</h2>
                     </div>
                     <div class="centered ten wide column row">
-                        <h3 class="column">{{album.artiste | URIDisplay}}</h3>
+                        <h3 class="column"><a ng-click="launchedSparqlRequest('artist','<'+album.artiste+'>')">{{album.artiste | URIDisplay}}</a></h3>
                     </div>
                     <div class="centered ten wide column row">
                         <h2 class="column">Date</h2>
@@ -105,9 +105,9 @@
                     <div class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="track in album.tracks" class="item">
-                                <i class="large github middle aligned icon"></i>
+                                <i class="large music middle aligned icon"></i>
                                 <div class="content">
-                                    <div class="header">{{track | URIDisplay}}</div>
+                                    <div class="header"><a ng-click="launchedSparqlRequest('track','<'+track+'>')">{{track | URIDisplay}}</a></div>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                     <div class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="label in album.labels" class="item">
-                                <i class="large github middle aligned icon"></i>
+                                <i class="large record middle aligned icon"></i>
                                 <div class="content">
                                     <div class="header">{{label | URIDisplay}}</div>
                                 </div>
@@ -131,7 +131,7 @@
                     <div class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="producer in album.producers" class="item">
-                                <i class="large github middle aligned icon"></i>
+                                <i class="large user middle aligned icon"></i>
                                 <div class="content">
                                     <div class="header">{{producer | URIDisplay}}</div>
                                 </div>
@@ -148,7 +148,7 @@
                         <h2 class="column">Album Suivant</h2>
                     </div>
                     <div class="centered ten wide column row">
-                        <h3 class="column">{{album.nextAlbum | URIDisplay}}</h3>
+                        <h3 class="column"><a ng-click="launchedSparqlRequest('album','<'+album.nextAlbum+'>')">{{album.nextAlbum | URIDisplay}}</a></h3>
                     </div>
                 </div>
             </div>
@@ -167,13 +167,13 @@
                         <h2 class="column">Artiste</h2>
                     </div>
                     <div class="centered ten wide column row">
-                        <h3 class="column">{{track.artiste | URIDisplay}}</h3>
+                        <h3 class="column"><a ng-click="launchedSparqlRequest('artist','<'+track.artiste+'>')">{{track.artiste | URIDisplay}}</a></h3>
                     </div>
                     <div class="centered ten wide column row">
                         <h2 class="column">Album</h2>
                     </div>
                     <div class="centered ten wide column row">
-                        <h3 class="column">{{track.album | URIDisplay}}</h3>
+                        <h3 class="column"><a ng-click="launchedSparqlRequest('album','<'+track.album+'>')">{{track.album | URIDisplay}}</a></h3>
                     </div>
                     <div class="centered ten wide column row">
                         <h2 class="column">Date</h2>
