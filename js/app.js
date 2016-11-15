@@ -16,6 +16,9 @@ function MainCtrl($scope) {
         name:"",
         albums:[],
         tracks:[],
+        birth:"",
+        death:"",
+        bands:[],
         comment:"",
         image:"",
         link:""
@@ -29,7 +32,9 @@ function MainCtrl($scope) {
         length:"",
         date:"",
         link:"",
-        image:""
+        image:"",
+        creators:[],
+        labels:[]
     };
     $scope.album = {
         name:"",
@@ -39,6 +44,8 @@ function MainCtrl($scope) {
         labels:[],
         comment:"",
         nextAlbum:"",
+        lastAlbum:"",
+        type:"",
         producers:[],
         tracks:[],
         link:""
@@ -155,8 +162,6 @@ function MainCtrl($scope) {
                                     UNION \
                                     { %album% ontology:genre ?genre } \
                                     UNION \
-                                    { %album% ontology:genre ?genre } \
-                                    UNION \
                                     { %album% ontology:recordLabel ?label } \
                                     UNION \
                                     { %album% rdfs:comment ?comment. \
@@ -216,8 +221,6 @@ function MainCtrl($scope) {
                                     %track% dbpedia2:released ?date. \
                                     filter(datatype(?date) = xsd:date) \
                                     } \
-                                    UNION \
-                                    { %track% dbpedia2:trackNo ?no } \
                                     UNION \
                                     { %track% foaf:isPrimaryTopicOf ?link } \
                                     UNION \
@@ -285,6 +288,9 @@ function MainCtrl($scope) {
             name:"",
             albums:[],
             tracks:[],
+            birth:"",
+            death:"",
+            bands:[],
             comment:"",
             image:"",
             link:""
@@ -298,7 +304,9 @@ function MainCtrl($scope) {
             length:"",
             date:"",
             link:"",
-            image:""
+            image:"",
+            creators:[],
+            labels:[]
         };
         $scope.album = {
             name:"",
@@ -308,6 +316,8 @@ function MainCtrl($scope) {
             labels:[],
             comment:"",
             nextAlbum:"",
+            lastAlbum:"",
+            type:"",
             producers:[],
             tracks:[],
             link:""
@@ -549,6 +559,7 @@ function MainCtrl($scope) {
     }
 
     function formatResultSparql(data, typeURI) {
+        console.log(data);
         switch (typeURI){
             case 'artist':
                 _.forEach(data.results.bindings, function (binding) {
@@ -561,6 +572,10 @@ function MainCtrl($scope) {
                             ){
                                 $scope.artist['albums'].push(object);
                             }
+                        }else if(key=='track') {
+                            $scope.artist['tracks'].push(object['track'].value);
+                        }else if(key=='band') {
+                            $scope.artist['bands'].push(object['band'].value);
                         }else if (key!='album'){
                             $scope.artist[key] = value.value;
                         }
@@ -585,7 +600,15 @@ function MainCtrl($scope) {
             case 'track':
                 _.forEach(data.results.bindings, function (binding) {
                     _.forEach(binding, function (value, key, object) {
-                        $scope.track[key] = value.value;
+                        if(key=='creator'){
+                            if(object['creator'].value!='*'){
+                                $scope.track['creators'].push(object['creator'].value);
+                            }
+                        }else if(key=='label'){
+                            $scope.track['labels'].push(object['label'].value);
+                        }else{
+                            $scope.track[key] = value.value;
+                        }
                     });
                 });
                 break;
