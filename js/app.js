@@ -331,7 +331,7 @@ function MainCtrl($scope) {
              *             Step 1 : Google
              *************************************************/
     function google(search){
-        var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + "&alt=json" + "&start=1" + "&num=" + nbGoogleLinks;
+        var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + " Music" + "&alt=json" + "&start=1" + "&num=" + nbGoogleLinks;
         $.ajax({
             method: "GET",
             url: url,
@@ -385,7 +385,7 @@ function MainCtrl($scope) {
                 support:0
             },
             success: function (dbPediaData) {
-                //console.log("DBPedia : ",dbPediaData);
+                console.log("DBPedia : ",dbPediaData);
                 cptData++;
                 _.forEach(dbPediaData.Resources, function (resource, index) {
                     filterPush(resource, index, dbPediaData, dataLength);
@@ -513,6 +513,7 @@ function MainCtrl($scope) {
 
     function filterPush(resource, index, dbPediaData, dataLength) {
         var bool = false;
+        if(resource['@types']=="") bool = true;
         switch ($scope.choosenType){
             case 'artist':
                 _.forEach(artistType,function (type) {
