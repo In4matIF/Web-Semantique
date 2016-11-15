@@ -35,23 +35,23 @@
                 <div class="item active">Résultats</div>
             </div>
             <div ng-if="activeType=='artist'" class="ui bottom attached active tab segment">
-                <h1 class="ui centered header">{{artist.name}}</h1>
-                <img class="ui centered big rounded image" src="{{artist.image}}">
+                <h1 ng-if="artist.name!=''" class="ui centered header">{{artist.name}}</h1>
+                <img ng-if="artist.image!=''" class="ui centered big rounded image" src="{{artist.image}}">
                 <br>
                 <div class="ui grid">
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.comment!=''" class="centered ten wide column row">
                         <h2 class="column">Description</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.comment!=''" class="centered ten wide column row">
                         <div class="column justified">{{artist.comment}}</div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.albums.length>0" class="centered ten wide column row">
                         <h2 class="column">Albums</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.albums.length>0" class="centered ten wide column row">
                         <div class="ui items">
                             <div ng-repeat="album in artist.albums" class="item">
-                                <div class="ui tiny image">
+                                <div ng-if="false" class="ui tiny image">
                                     <img src="http://91.68.209.12/bmi/semantic-ui.com/images/wireframe/image.png">
                                 </div>
                                 <div class="middle aligned content">
@@ -63,46 +63,46 @@
                             </div>
                         </div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.link!=''" class="centered ten wide column row">
                         <h2 class="column">Lien</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.link!=''" class="centered ten wide column row">
                         <a class="column justified" target="_blank" href="{{artist.link}}">{{artist.link}}</a>
                     </div>
                 </div>
             </div>
             <div ng-if="activeType=='album'" class="ui bottom attached active tab segment">
-                <h1 class="ui centered header">{{album.name}}</h1>
+                <h1 ng-if="album.name!=''" class="ui centered header">{{album.name}}</h1>
                 <br>
                 <div class="ui grid">
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.comment!=''" class="centered ten wide column row">
                         <h2 class="column">Description</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.comment!=''" class="centered ten wide column row">
                         <div class="column justified">{{album.comment}}</div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.artiste!=''" class="centered ten wide column row">
                         <h2 class="column">Artiste</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.artiste!=''" class="centered ten wide column row">
                         <h3 class="column"><a ng-click="launchedSparqlRequest('artist','<'+album.artiste+'>')">{{album.artiste | URIDisplay}}</a></h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.annee!=''" class="centered ten wide column row">
                         <h2 class="column">Date</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.annee!=''" class="centered ten wide column row">
                         <h3 class="column">{{album.annee}}</h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.genre!=''" class="centered ten wide column row">
                         <h2 class="column">Genre</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.genre!=''" class="centered ten wide column row">
                         <h3 class="column">{{album.genre | URIDisplay}}</h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.tracks.length>0" class="centered ten wide column row">
                         <h2 class="column">Chansons</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.tracks.length>0" class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="track in album.tracks" class="item">
                                 <i class="large music middle aligned icon"></i>
@@ -112,10 +112,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.labels.length>0" class="centered ten wide column row">
                         <h2 class="column">Labels</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.labels.length>0" class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="label in album.labels" class="item">
                                 <i class="large record middle aligned icon"></i>
@@ -125,10 +125,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.producers.length>0" class="centered ten wide column row">
                         <h2 class="column">Producteurs</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.producers.length>0" class="centered ten wide column row">
                         <div class="ui relaxed divided list">
                             <div ng-repeat="producer in album.producers" class="item">
                                 <i class="large user middle aligned icon"></i>
@@ -138,65 +138,65 @@
                             </div>
                         </div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.link!=''" class="centered ten wide column row">
                         <h2 class="column">Lien</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="album.link!=''" class="centered ten wide column row">
                         <a class="column justified" target="_blank" href="{{album.link}}">{{album.link}}</a>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="artist.nextAlbum!=''" class="centered ten wide column row">
                         <h2 class="column">Album Suivant</h2>
                     </div>
-                    <div class="centered ten wide column row">
-                        <h3 class="column"><a ng-click="launchedSparqlRequest('album','<'+album.nextAlbum+'>')">{{album.nextAlbum | URIDisplay}}</a></h3>
+                    <div ng-if="artist.nextAlbum!=''" class="centered ten wide column row">
+                        <h3 class="column">{{album.nextAlbum}}</h3>
                     </div>
                 </div>
             </div>
             <div ng-if="activeType=='track'" class="ui bottom attached active tab segment">
-                <h1 class="ui centered header">{{track.name}}</h1>
-                <img class="ui centered big rounded image" src="{{track.image}}">
+                <h1 ng-if="track.name!=''" class="ui centered header">{{track.name}}</h1>
+                <img ng-if="track.image!=''" class="ui centered big rounded image" src="{{track.image}}">
                 <br>
                 <div class="ui grid">
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.comment!=''" class="centered ten wide column row">
                         <h2 class="column">Description</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.comment!=''" class="centered ten wide column row">
                         <div class="column justified">{{track.comment}}</div>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.artiste!=''" class="centered ten wide column row">
                         <h2 class="column">Artiste</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.artiste!=''" class="centered ten wide column row">
                         <h3 class="column"><a ng-click="launchedSparqlRequest('artist','<'+track.artiste+'>')">{{track.artiste | URIDisplay}}</a></h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.album!=''" class="centered ten wide column row">
                         <h2 class="column">Album</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.album!=''" class="centered ten wide column row">
                         <h3 class="column"><a ng-click="launchedSparqlRequest('album','<'+track.album+'>')">{{track.album | URIDisplay}}</a></h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.date!=''" class="centered ten wide column row">
                         <h2 class="column">Date</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.date!=''" class="centered ten wide column row">
                         <h3 class="column">{{track.date}}</h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.genre!=''" class="centered ten wide column row">
                         <h2 class="column">Genre</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.genre!=''" class="centered ten wide column row">
                         <h3 class="column">{{track.genre | URIDisplay}}</h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.length!=''" class="centered ten wide column row">
                         <h2 class="column">Durée</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.length!=''" class="centered ten wide column row">
                         <h3 class="column">{{track.length}}</h3>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.link!=''" class="centered ten wide column row">
                         <h2 class="column">Lien</h2>
                     </div>
-                    <div class="centered ten wide column row">
+                    <div ng-if="track.link!=''" class="centered ten wide column row">
                         <a class="column justified" target="_blank" href="{{track.link}}">{{track.link}}</a>
                     </div>
                 </div>

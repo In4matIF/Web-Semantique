@@ -258,7 +258,6 @@ function MainCtrl($scope) {
     };
 
     $scope.googleImage = function(search){
-        console.log(search);
         var url = googleUrl + "&cx=013036536707430787589:_pqjad5hr1a&q=" + search + "&alt=json" + "&start=1" + "&num=" + nbGoogleImageLinks + "&fileType=" + imageType;
         $.ajax({
             method: "GET",
@@ -336,7 +335,7 @@ function MainCtrl($scope) {
             method: "GET",
             url: url,
             success: function (googleData) {
-                console.log("Google : ",googleData);
+                //console.log("Google : ",googleData);
                 _.forEach(googleData.items,function (item, indexGoogle) {
                     alchemyAPI(item, indexGoogle, googleData.items.length);
                 })
@@ -385,7 +384,7 @@ function MainCtrl($scope) {
                 support:0
             },
             success: function (dbPediaData) {
-                console.log("DBPedia : ",dbPediaData);
+                //console.log("DBPedia : ",dbPediaData);
                 cptData++;
                 _.forEach(dbPediaData.Resources, function (resource, index) {
                     filterPush(resource, index, dbPediaData, dataLength);
