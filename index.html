@@ -214,7 +214,7 @@
                         <div class="column justified">{{track.comment}}</div>
                     </div>
                     <div ng-if="track.artiste!=''" class="centered ten wide column row">
-                        <h2 class="column">Artiste</h2>
+                        <h2 class="column">Artist</h2>
                     </div>
                     <div ng-if="track.artiste!=''" class="centered ten wide column row">
                         <h3 class="column"><a ng-click="launchedSparqlRequest('artist','<'+track.artiste+'>')">{{track.artiste | URIDisplay}}</a></h3>
@@ -238,7 +238,7 @@
                         <h3 class="column">{{track.genre | URIDisplay}}</h3>
                     </div>
                     <div ng-if="track.length!=''" class="centered ten wide column row">
-                        <h2 class="column">Durée</h2>
+                        <h2 class="column">Length</h2>
                     </div>
                     <div ng-if="track.length!=''" class="centered ten wide column row">
                         <h3 class="column">{{track.length}}</h3>
@@ -270,7 +270,7 @@
                         </div>
                     </div>
                     <div ng-if="track.link!=''" class="centered ten wide column row">
-                        <h2 class="column">Lien</h2>
+                        <h2 class="column">Link</h2>
                     </div>
                     <div ng-if="track.link!=''" class="centered ten wide column row">
                         <a class="column justified" target="_blank" href="{{track.link}}">{{track.link}}</a>
