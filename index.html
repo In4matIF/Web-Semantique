@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Web Sémantique</title>
+    <title>MusiGo Best Musical Search Engine</title>
     <link rel="stylesheet" href="./css/lib/semanticui/semantic.min.css">
     <link rel="stylesheet" href="./css/lib/tether/tether.min.css">
 </head>
 <body ng-app="webSemantiqueApp">
     <div class="ui container" ng-controller="MainCtrl">
         <br>
-        <h1 class="ui center aligned header">Web Sémantique</h1>
+        <div class="ui center aligned header"><img src="asset/Musigo512.png" style="height: 200px;width: 512px;" alt="Musigo"></div>
         <br>
         <br>
         <div class="ui center aligned container">
@@ -19,7 +19,8 @@
                     <i id="icon-search" class="search icon"></i>
                 </div>
                 <select ng-model="choosenType" class="ui search dropdown">
-                    <option value="artist" selected>Artist</option>
+                    <option value="">Choose a type</option>
+                    <option value="artist">Artist</option>
                     <option value="album">Album</option>
                     <option value="track">Song</option>
                 </select>
